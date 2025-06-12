@@ -7,11 +7,12 @@
 * Squareline Studio with a "The Promised Neverland" theme.
 *
 * Key Features:
+*  - Start screen displaying startup steps & errors (if any)
 *  - Accurate timekeeping with NTP synchronization (every 2 hours)
-*  - Geo, temperature, humidity & UV index data updates from OpenWeatherMap (updated every 10 minutes)
-*  - JSON files on the SD Card used to store Geo & Weather data
-*  - Colour-coded weather values based on current conditions (temperature & UV index values)
-*  - Date display in DD/MM/YY format
+*  - Geo, temperature, humidity & UV index data updates from OpenWeatherMap every 10 minutes
+*  - JSON files created on the SD Card to store Geo & Weather data
+*  - Colour-coded weather values based on current conditions (temperature & UV index label colours)
+*  - Date display in format DD/MM/YY
 *  - LVGL-based graphical interface with FPS counter
 *  - Wi-Fi status monitoring with colour-coded signal strength (RSSI)
 *  - IP address display with segmented digits
@@ -20,23 +21,23 @@
 *  - NeoPixel LED rainbow effect
 *
 * How It Works:
-*  1. Time Synchronization: Gets current time via NTP and maintains with ESP32 RTC
+*  1. Time Synchronization: Gets current time via NTP every 2 hours and maintains with ESP32Time
 *  2. Weather Updates:
-      - First fetches Lat/Lon co-ordinates using the city name OWM Geocoding API,
-      - Uses stored co-ordinates to fetch current conditions from OWM One Call API
-*  3. UI Updates: Continuously refreshes time, weather, and other information
-*  4. System Monitoring: Tracks Wi-Fi status, FPS, and maintains update counters
+*     - First fetches Lat/Lon co-ordinates using the city name OWM Geocoding API,
+*     - Uses stored co-ordinates to fetch current conditions via OWM One Call API
+*  3. UI Updates: Continuously refreshes time, weather, Wi-Fi status, FPS, and maintains update counters
 *
 * Notes:
 *  - Requires OpenWeatherMap One Call account (requires credit card but free for up to 1000 calls per day).
-*    This code makes an API call every 10min, which means 144 calls per day - well under the free limit.
-*  - Edit configuration section for your Wi-Fi credentials, OWM API key, physical location, choice of
-*    metric/imperial, and timezone offset
+*    - This code makes an API call every 10min, which means 144 calls per day - well under the free limit.
+*    - The call limit can be capped at 1000 per day on the OWM website, this will ensure you are not charged for going over.
+*  - Edit configuration section for your Wi-Fi credentials, OWM API key, physical location, choice of metric/imperial, and timezone offset
 *  - City names can use normal spaces (automatically URL encoded)
 *  - Backlight brightness is set to 75% by default (can be changed in setup)
 *  - Had to edit line 4 to [#include "lv_conf.h"] and comment out line 5 in LVGL_Driver.h
 *  - Added JSON file handling functionality to the SD_Card helpers
 *  - Exposed NeoPixel RGB values in NeoPixel helpers & inverted RGB channels to match colours (not used)
+*  - Added NeoPixel brightness adjustment as I was finding full brightness is heating up the device a bit too much for my tastes
 *  - SLS export path will need to get updated in the project settings
 *  - When exporting in SLS & replacing project files, you NEED to edit the ui.h file on line 30:
 *      #include "screens/ui_MainScreen.h"
