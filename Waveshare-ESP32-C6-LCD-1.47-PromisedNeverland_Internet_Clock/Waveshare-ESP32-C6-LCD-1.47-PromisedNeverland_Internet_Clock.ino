@@ -30,7 +30,7 @@
 * Notes:
 *  - Requires OpenWeatherMap One Call account (requires credit card but free for up to 1000 calls per day).
 *    - This code makes an API call every 10min, which means 144 calls per day - well under the free limit.
-*    - The call limit can be capped at 1000 per day on the OWM website, this will ensure you are not charged for going over.
+*    - The call limit can be capped at 1000 per day on the OWM website, this will ensure you are not charged.
 *  - Edit configuration section for your Wi-Fi credentials, OWM API key, physical location, choice of metric/imperial, and timezone offset
 *  - City names can use normal spaces (automatically URL encoded)
 *  - Backlight brightness is set to 75% by default (can be changed in setup)
