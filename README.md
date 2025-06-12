@@ -28,7 +28,7 @@ This code displays time, weather data, and system information on the Waveshare E
 ## SLS Project Files:
 - This repository includes the SquareLine Studio project files in: **'.\Waveshare-ESP32-C6-LCD-1.47-PromisedNeverland_Internet_Clock\sls_files'**
 - In the **'sls_files'** folder, there are 2 subfolders: **'export'** & **'project'**
-- Open SquareLine_Project in the **'project'** folder with Squareline Studio to make changes to the UI.
+- Open PromisedNeverland_Internet_Clock.spj in the **'project'** folder with Squareline Studio to make changes to the UI.
 - You may need to update the SLS project settings **Project Export Root** & **UI Files Export Path** locations to reflect where you have saved the Arduino project **before exporting**.
 - Export project files to the **'export'** folder & copy all, then replace all files in the **root** of the Arduino project folder.
 - **Do not export into the root Arduino project folder as SLS will erase the folder contents before exporting!**
