@@ -26,7 +26,7 @@ This code displays time, weather data, and system information on the Waveshare E
 - Exposed NeoPixel RGB values in NeoPixel helpers & inverted RGB channels to match colours (not used in this project)
 
 ## SLS Project Files:
-- This repository includes the SquareLine Studio project files in: **'.\Waveshare-ESP32-C6-LCD-1.47-PlasmaBall-Internet_Clock\sls_files'**
+- This repository includes the SquareLine Studio project files in: **'.\Waveshare-ESP32-C6-LCD-1.47-PromisedNeverland_Internet_Clock\sls_files'**
 - In the **'sls_files'** folder, there are 2 subfolders: **'export'** & **'project'**
 - Open SquareLine_Project in the **'project'** folder with Squareline Studio to make changes to the UI.
 - You may need to update the SLS project settings **Project Export Root** & **UI Files Export Path** locations to reflect where you have saved the Arduino project **before exporting**.
