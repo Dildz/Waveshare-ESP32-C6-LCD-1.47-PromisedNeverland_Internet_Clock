@@ -70,13 +70,13 @@ const char* ntpServer = "pool.ntp.org";
 /******************************
 *** >> EDIT THIS SECTION << ***
 *******************************/
-const char* ssid = "MSI-GF75";                           // replace with your Wi-Fi SSID name
-const char* password = "Uitenhage1";                     // replace with your Wi-Fi password
-const char* owmAPI = "0f9cae9b97bc31029c22c4c227cfb2d6"; // replace with your OWM API key
-const char* city = "Port Elizabeth";                     // replace with your city/town
-const char* countryCode = "ZA";                          // replace with your country code
-bool useMetric = true;                                   // true for metric (°C), false for imperial (°F)
-int tzOffset = 2;                                        // replace with your time zone offset (mine is GMT +2)
+const char* ssid = "YOUR_SSID_NAME";     // replace with your Wi-Fi SSID name
+const char* password = "YOUR_PASSWORD";  // replace with your Wi-Fi password
+const char* owmAPI = "YOUR_OWM_API_KEY"; // replace with your OWM API key
+const char* city = "YOUR_CITY_NAME";     // replace with your city/town
+const char* countryCode = "ZA";          // replace with your country code (GB, DE, US, etc)
+bool useMetric = true;                   // true for metric (°C), false for imperial (°F)
+int tzOffset = 2;                        // replace with your time zone offset (mine is GMT +2)
 
 // Global Variables
 unsigned long lastWiFiUpdate = 0;
@@ -93,10 +93,10 @@ float temp = 0;
 float humi = 0;
 float uvIndex = 0;
 
-int ntpSyncInterval = 7200;        // NTP sync interval (2 hours in seconds)
-int owmSyncInterval = 600;         // OWM update interval (10 minutes in seconds)
-int ntpCounter = ntpSyncInterval;  // starts at ntpSyncInterval and counts down to 0
-int owmCounter = 0;                // starts at 0 and counts up to owmSyncInterval
+int ntpSyncInterval = 7200;       // NTP sync interval (2 hours in seconds)
+int owmSyncInterval = 600;        // OWM update interval (10 minutes in seconds)
+int ntpCounter = ntpSyncInterval; // starts at ntpSyncInterval and counts down to 0
+int owmCounter = 0;               // starts at 0 and counts up to owmSyncInterval
 
 unsigned long lastFPSTime = 0;
 unsigned int frameCount = 0;
@@ -273,41 +273,71 @@ void updateWeather() {
   int tempInt = (int)temp;
   _ui_label_set_property(ui_Temp, _UI_LABEL_PROPERTY_TEXT, String(tempInt).c_str());
  
-  // Temperature label colours (blue at 5°C or less to red at 35°C or more)
+  // Temperature label colours
   lv_color_t tempColour;
   const lv_opa_t alpha = 225;
- 
-  if (tempInt <= 5) {
+  
+  // Metric (°C) colour ranges
+  if (useMetric) {
     // Blue (cold)
-    tempColour = lv_color_mix(lv_color_hex(0x0000FF), lv_color_white(), alpha);
-  }
-  else if (tempInt <= 18) {
-    // Blue to green transition
-    uint8_t ratio = map(tempInt, 5, 18, 0, 255);
-    tempColour = lv_color_mix(lv_color_hex(0x0000FF), lv_color_hex(0x00FF00), ratio);
-    tempColour = lv_color_mix(tempColour, lv_color_white(), alpha);
-  }
-  else if (tempInt <= 25) {
-    // Green to yellow transition
-    uint8_t ratio = map(tempInt, 18, 25, 0, 255);
-    tempColour = lv_color_mix(lv_color_hex(0x00FF00), lv_color_hex(0xFFFF00), ratio);
-    tempColour = lv_color_mix(tempColour, lv_color_white(), alpha);
-  }
-  else if (tempInt <= 30) {
-    // Yellow to orange transition
-    uint8_t ratio = map(tempInt, 25, 30, 0, 255);
-    tempColour = lv_color_mix(lv_color_hex(0xFFFF00), lv_color_hex(0xFFA500), ratio);
-    tempColour = lv_color_mix(tempColour, lv_color_white(), alpha);
-  }
-  else if (tempInt <= 35) {
-    // Orange to red transition
-    uint8_t ratio = map(tempInt, 30, 35, 0, 255);
-    tempColour = lv_color_mix(lv_color_hex(0xFFA500), lv_color_hex(0xFF0000), ratio);
-    tempColour = lv_color_mix(tempColour, lv_color_white(), alpha);
-  }
-  else {
+    if (tempInt <= 5) {
+      tempColour = lv_color_mix(lv_color_hex(0x0000FF), lv_color_white(), alpha);
+    }
+    // Blue/Green
+    else if (tempInt >= 6 && tempInt <= 19) {
+      tempColour = lv_color_mix(lv_color_hex(0x00FFFF), lv_color_white(), alpha);
+    }
+    // Green
+    else if (tempInt <= 24) {
+      tempColour = lv_color_mix(lv_color_hex(0x00FF00), lv_color_white(), alpha);
+    }
+    // Green/Yellow
+    else if (tempInt <= 29) {
+      tempColour = lv_color_mix(lv_color_hex(0xC8FF00), lv_color_white(), alpha);
+    }
+    // Yellow
+    else if (tempInt <= 34) {
+      tempColour = lv_color_mix(lv_color_hex(0xFFFF00), lv_color_white(), alpha);
+    }
+    // Yellow/Red
+    else if (tempInt <= 39) {
+      tempColour = lv_color_mix(lv_color_hex(0xFF9B00), lv_color_white(), alpha);
+    }
     // Red (hot)
-    tempColour = lv_color_mix(lv_color_hex(0xFF0000), lv_color_white(), alpha);
+    else {
+      tempColour = lv_color_mix(lv_color_hex(0xFF0000), lv_color_white(), alpha);
+    }
+  }
+  // Imperial (°F) colour ranges (converted from Celsius values)
+  else {
+    // Blue (cold) - 5°C = 41°F
+    if (tempInt <= 41) {
+      tempColour = lv_color_mix(lv_color_hex(0x0000FF), lv_color_white(), alpha);
+    }
+    // Blue/Green (6-18°C = 43-64°F)
+    else if (tempInt <= 64) {
+      tempColour = lv_color_mix(lv_color_hex(0x00FFFF), lv_color_white(), alpha);
+    }
+    // Green (19-24°C = 66-75°F)
+    else if (tempInt <= 75) {
+      tempColour = lv_color_mix(lv_color_hex(0x00FF00), lv_color_white(), alpha);
+    }
+    // Green/Yellow (25-29°C = 77-84°F)
+    else if (tempInt <= 84) {
+      tempColour = lv_color_mix(lv_color_hex(0xC8FF00), lv_color_white(), alpha);
+    }
+    // Yellow (30-34°C = 86-93°F)
+    else if (tempInt <= 93) {
+      tempColour = lv_color_mix(lv_color_hex(0xFFFF00), lv_color_white(), alpha);
+    }
+    // Yellow/Red (35-39°C = 95-102°F)
+    else if (tempInt <= 102) {
+      tempColour = lv_color_mix(lv_color_hex(0xFF9B00), lv_color_white(), alpha);
+    }
+    // Red (hot) - ≥40°C = ≥104°F
+    else {
+      tempColour = lv_color_mix(lv_color_hex(0xFF0000), lv_color_white(), alpha);
+    }
   }
 
   // Set colour of temperature label
@@ -327,27 +357,27 @@ void updateWeather() {
   snprintf(uvStr, sizeof(uvStr), "%02d", uvInt); // format with leading zero for single-digit values
   _ui_label_set_property(ui_UVIndex, _UI_LABEL_PROPERTY_TEXT, uvStr);
 
-  // UV Index label colours
+  // UV Index label colours (same for both units)
   lv_color_t uvColour;
-  
+
+  // Green (low)
   if (uvInt <= 2) {
-    // Green (low)
     uvColour = lv_color_mix(lv_color_hex(0x00FF00), lv_color_white(), alpha);
   }
+  // Yellow (moderate)
   else if (uvInt <= 5) {
-    // Yellow (moderate)
     uvColour = lv_color_mix(lv_color_hex(0xFFFF00), lv_color_white(), alpha);
   }
+  // Orange (high)
   else if (uvInt <= 7) {
-    // Orange (high)
     uvColour = lv_color_mix(lv_color_hex(0xFFA500), lv_color_white(), alpha);
   }
+  // Red (very high)
   else if (uvInt <= 10) {
-    // Red (very high)
     uvColour = lv_color_mix(lv_color_hex(0xFF0000), lv_color_white(), alpha);
   }
+  // Violet (extreme)
   else {
-    // Violet (extreme)
     uvColour = lv_color_mix(lv_color_hex(0xEE82EE), lv_color_white(), alpha);
   }
   // Set colour of UV Index label
